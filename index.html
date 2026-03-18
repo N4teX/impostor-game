@@ -521,9 +521,8 @@
                 roles[index] = { isImpostor: true, word: null };
             });
 
-            // Losowanie gracza rozpoczynającego
-            const civilianIndices = roles.map((r, i) => !r.isImpostor ? i : -1).filter(i => i !== -1);
-            startingPlayerIndex = civilianIndices[Math.floor(Math.random() * civilianIndices.length)];
+            // Losowanie gracza rozpoczynającego (każdy może zacząć, również impostor)
+            startingPlayerIndex = Math.floor(Math.random() * playersCount);
 
             currentPlayerIndex = 0;
             updatePassingScreenUI();
