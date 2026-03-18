@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Impostor Game</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
@@ -50,7 +49,6 @@
 </head>
 <body class="min-h-screen font-sans text-slate-100 flex items-center justify-center p-4 relative selection:bg-purple-500/30 bg-slate-900 touch-manipulation select-none">
 
-    <!-- Płynne tło (Liquid Background) -->
     <div class="fixed inset-0 w-full h-full overflow-hidden -z-10">
         <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
         <div class="absolute top-0 -right-4 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
@@ -59,72 +57,94 @@
 
     <div class="w-full z-10 transition-all duration-500 ease-in-out">
         
-        <!-- ========================================== -->
-        <!-- EKRAN 1: USTAWIENIA (SETUP)                -->
-        <!-- ========================================== -->
-        <div id="screen-setup" class="flex flex-col items-center justify-center space-y-8 w-full max-w-sm mx-auto">
-            <div class="text-center space-y-2 mb-4">
+        <div id="screen-setup" class="flex flex-col items-center justify-center space-y-6 w-full max-w-sm mx-auto">
+            <div class="text-center space-y-2 mb-2">
                 <h1 class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 tracking-tight drop-shadow-lg">
                     IMPOSTOR
                 </h1>
                 <p class="text-white/70 font-medium">Znajdź intruza wśród nas</p>
             </div>
 
-            <div class="glass-panel w-full rounded-[2.5rem] p-6 space-y-6 relative overflow-hidden">
+            <div class="glass-panel w-full rounded-[2.5rem] p-6 space-y-5 relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white/10 to-transparent"></div>
 
-                <!-- Liczba graczy -->
-                <div class="relative z-10 flex flex-col items-center space-y-4">
+                <div class="relative z-10 flex flex-col items-center space-y-3">
                     <div class="flex items-center space-x-2 text-white/90">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         <span class="font-semibold uppercase tracking-wider text-sm">Liczba Graczy</span>
                     </div>
-                    <div class="flex items-center justify-between w-full px-4 glass-panel rounded-full h-16">
+                    <div class="flex items-center justify-between w-full px-4 glass-panel rounded-full h-14">
                         <button onclick="adjustPlayers(-1)" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-xl font-bold transition-colors">-</button>
                         <span id="players-count-display" class="text-3xl font-bold text-white w-12 text-center">4</span>
                         <button onclick="adjustPlayers(1)" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-xl font-bold transition-colors">+</button>
                     </div>
                 </div>
 
-                <!-- Liczba impostorów -->
-                <div class="relative z-10 flex flex-col items-center space-y-4">
+                <div class="relative z-10 flex flex-col items-center space-y-3">
                     <div class="flex items-center space-x-2 text-red-200">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" x2="22" y1="8" y2="13"/><line x1="22" x2="17" y1="8" y2="13"/></svg>
                         <span class="font-semibold uppercase tracking-wider text-sm">Impostorzy</span>
                     </div>
-                    <div class="flex items-center justify-between w-full px-4 glass-panel rounded-full h-16">
+                    <div class="flex items-center justify-between w-full px-4 glass-panel rounded-full h-14">
                         <button onclick="adjustImpostors(-1)" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-xl font-bold transition-colors">-</button>
                         <span id="impostors-count-display" class="text-3xl font-bold text-red-100 w-12 text-center">1</span>
                         <button onclick="adjustImpostors(1)" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-xl font-bold transition-colors">+</button>
                     </div>
                 </div>
 
-                <!-- Przycisk Modalu Kategorii -->
                 <div class="relative z-10 w-full pt-2">
-                    <button onclick="openCategoryModal()" class="w-full flex items-center justify-between px-5 py-4 glass-panel rounded-2xl hover:bg-white/10 transition-colors active:scale-95 duration-200">
+                    <div onclick="toggleJester()" class="flex items-center justify-between px-5 py-3 glass-panel rounded-2xl cursor-pointer hover:bg-white/10 transition-colors active:scale-95 duration-200">
+                        <div class="flex items-center space-x-3 text-white/90">
+                            <svg id="jester-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/50 transition-colors"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                            <div class="flex flex-col">
+                                <span class="font-semibold text-sm">Tryb Jester</span>
+                                <span class="text-[10px] text-white/50 leading-tight">5% szans: wszyscy to impostorzy!</span>
+                            </div>
+                        </div>
+                        <div id="jester-toggle-bg" class="w-[44px] h-6 rounded-full relative transition-colors duration-300 shrink-0 shadow-inner bg-white/20">
+                            <div id="jester-toggle-dot" class="w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-md transition-transform duration-300 translate-x-[2px]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chaos Toggle -->
+                <div class="relative z-10 w-full pt-1">
+                    <div onclick="toggleChaos()" class="flex items-center justify-between px-5 py-3 glass-panel rounded-2xl cursor-pointer hover:bg-white/10 transition-colors active:scale-95 duration-200">
+                        <div class="flex items-center space-x-3 text-white/90">
+                            <svg id="chaos-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/50 transition-colors"><path d="M12 2v20"/><path d="m4.93 19.07 14.14-14.14"/><path d="M2 12h20"/><path d="m4.93 4.93 14.14 14.14"/></svg>
+                            <div class="flex flex-col">
+                                <span class="font-semibold text-sm">Tryb Chaos</span>
+                                <span class="text-[10px] text-white/50 leading-tight">5% szans: każdy ma inne hasło!</span>
+                            </div>
+                        </div>
+                        <div id="chaos-toggle-bg" class="w-[44px] h-6 rounded-full relative transition-colors duration-300 shrink-0 shadow-inner bg-white/20">
+                            <div id="chaos-toggle-dot" class="w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-md transition-transform duration-300 translate-x-[2px]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative z-10 w-full pt-1">
+                    <button onclick="openCategoryModal()" class="w-full flex items-center justify-between px-5 py-3 glass-panel rounded-2xl hover:bg-white/10 transition-colors active:scale-95 duration-200">
                         <div class="flex items-center space-x-3 text-white/90">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
                             <span class="font-semibold text-sm">Kategorie Słów</span>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <span id="category-count-badge" class="bg-purple-500/80 text-white text-xs font-bold px-3 py-1 rounded-full shadow-inner border border-white/20"></span>
+                            <span id="category-count-badge" class="bg-purple-500/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-inner border border-white/20"></span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/50"><path d="m9 18 6-6-6-6"/></svg>
                         </div>
                     </button>
                 </div>
 
-                <p id="error-msg" class="text-red-300 text-sm text-center font-medium hidden-screen"></p>
+                <p id="error-msg" class="text-red-300 text-sm text-center font-medium hidden-screen m-0"></p>
 
-                <button onclick="startGame()" class="relative z-10 w-full py-4 mt-4 bg-gradient-to-r from-blue-500/80 to-purple-600/80 hover:from-blue-500 hover:to-purple-600 text-white rounded-full font-bold text-lg shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-2 border border-white/20">
+                <button onclick="startGame()" class="relative z-10 w-full py-4 mt-2 bg-gradient-to-r from-blue-500/80 to-purple-600/80 hover:from-blue-500 hover:to-purple-600 text-white rounded-full font-bold text-lg shadow-[0_0_20px_rgba(168,85,247,0.4)] transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-2 border border-white/20">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
                     <span>ROZPOCZNIJ GRĘ</span>
                 </button>
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- EKRAN 2: PRZEKAZYWANIE I ROLE (PASSING)    -->
-        <!-- ========================================== -->
         <div id="screen-passing" class="hidden-screen flex flex-col items-center justify-center w-full max-w-sm mx-auto h-full min-h-[70vh]">
             <div class="glass-panel w-full rounded-[2.5rem] p-8 text-center relative overflow-hidden flex flex-col items-center justify-between min-h-[450px]">
                 
@@ -132,10 +152,8 @@
                     1 / 4
                 </div>
 
-                <!-- Obszar wyświetlania treści (zmienia się po przytrzymaniu) -->
                 <div class="flex-grow flex flex-col items-center justify-center w-full mt-4 mb-8">
                     
-                    <!-- Widok Zablokowany -->
                     <div id="passing-hidden-view" class="flex flex-col items-center w-full">
                         <div class="w-24 h-24 rounded-full glass-panel flex items-center justify-center border-white/30 mb-6">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/80"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
@@ -144,9 +162,7 @@
                         <p class="text-white/60">Upewnij się, że nikt nie patrzy na Twój ekran!</p>
                     </div>
 
-                    <!-- Widok Odblokowany (Rola gracza) -->
                     <div id="passing-visible-view" class="hidden-screen flex flex-col items-center w-full">
-                        <!-- Zawartość dla Impostora -->
                         <div id="role-impostor" class="hidden-screen w-full flex flex-col items-center">
                             <div class="w-24 h-24 rounded-full bg-red-500/20 border-2 border-red-500/50 flex items-center justify-center mb-6">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-400"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
@@ -155,7 +171,6 @@
                             <p class="text-white/80 text-lg">Twoim zadaniem jest wtopić się w tłum. Zgadnij jakie jest hasło!</p>
                         </div>
 
-                        <!-- Zawartość dla Cywila -->
                         <div id="role-civilian" class="hidden-screen w-full flex flex-col items-center">
                             <div class="w-24 h-24 rounded-full bg-blue-500/20 border-2 border-blue-500/50 flex items-center justify-center mb-6">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-300"><polyline points="20 6 9 17 4 12"/></svg>
@@ -166,9 +181,7 @@
                     </div>
                 </div>
 
-                <!-- Interakcja (Przycisk Hold wewnątrz ramki) -->
                 <div class="w-full">
-                    <!-- Przycisk Hold -->
                     <div id="btn-hold-role" class="w-full py-5 bg-white/10 hover:bg-white/20 border border-white/30 rounded-full flex flex-col items-center justify-center cursor-pointer touch-none select-none transition-colors active:scale-95">
                         <div class="flex items-center space-x-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-70"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -178,7 +191,6 @@
                 </div>
             </div>
 
-            <!-- Kontener dla Przycisku Next Player poza szklaną ramką, aby uniknąć przeskakiwania zawartości -->
             <div class="w-full h-[60px] mt-4 relative">
                 <button id="btn-next-player" onclick="handleNextPlayer()" class="hidden-screen absolute inset-0 w-full h-full bg-gradient-to-r from-blue-500/80 to-purple-600/80 hover:from-blue-500 hover:to-purple-600 text-white rounded-full font-bold transition-all active:scale-95 border border-white/20 shadow-[0_0_15px_rgba(59,130,246,0.4)]">
                     PRZEKAŻ DALEJ
@@ -186,9 +198,6 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- EKRAN 3: DYSKUSJA (PLAYING)                -->
-        <!-- ========================================== -->
         <div id="screen-playing" class="hidden-screen flex flex-col items-center justify-center w-full max-w-sm mx-auto h-full min-h-[70vh] space-y-6">
             <div class="glass-panel w-full rounded-[2.5rem] p-8 text-center space-y-6">
                 <div class="w-20 h-20 mx-auto rounded-full glass-panel flex items-center justify-center border-white/30 mb-2">
@@ -217,21 +226,17 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- EKRAN 4: WYNIKI (RESULT)                   -->
-        <!-- ========================================== -->
         <div id="screen-result" class="hidden-screen flex flex-col items-center justify-center w-full max-w-sm mx-auto h-full min-h-[70vh] space-y-6">
             <div class="glass-panel w-full rounded-[2.5rem] p-8 text-center space-y-8 relative overflow-hidden">
                 <div>
-                    <p class="text-white/60 text-lg mb-2">Poprawne hasło to:</p>
+                    <p class="text-white/60 text-lg mb-2" id="result-subtitle">Poprawne hasło to:</p>
                     <h2 class="text-5xl font-black text-white drop-shadow-lg" id="result-word">Słowo</h2>
                 </div>
 
                 <div class="glass-panel rounded-2xl p-4 bg-black/20">
-                    <h3 class="text-red-300 font-bold mb-3 uppercase tracking-wider text-sm">Impostorzy:</h3>
+                    <h3 id="result-impostors-header" class="text-red-300 font-bold mb-3 uppercase tracking-wider text-sm">Impostorzy:</h3>
                     <div id="result-impostors-list" class="flex flex-wrap justify-center gap-2">
-                        <!-- Generowane dynamicznie -->
-                    </div>
+                        </div>
                 </div>
 
                 <button onclick="resetGame()" class="w-full py-4 bg-gradient-to-r from-blue-500/80 to-purple-600/80 hover:from-blue-500 hover:to-purple-600 text-white border border-white/20 rounded-full font-bold transition-all active:scale-95 flex items-center justify-center space-x-2">
@@ -243,19 +248,12 @@
 
     </div>
 
-    <!-- ========================================== -->
-    <!-- EKRAN MODALU KATEGORII (BOTTOM SHEET)      -->
-    <!-- ========================================== -->
     <div id="category-modal" class="fixed inset-0 z-50 flex items-end justify-center hidden-screen">
-        <!-- Backdrop -->
         <div id="category-modal-backdrop" onclick="closeCategoryModal()" class="absolute inset-0 bg-black/50 backdrop-blur-sm modal-overlay cursor-pointer"></div>
         
-        <!-- Bottom Sheet -->
         <div id="category-modal-sheet" class="w-full max-w-md bg-slate-900/95 border-t border-white/10 rounded-t-[2.5rem] p-6 pb-12 relative z-10 shadow-2xl modal-sheet flex flex-col max-h-[85vh]">
-            <!-- Drag Handle -->
             <div class="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-6 shrink-0"></div>
             
-            <!-- Header -->
             <div class="flex justify-between items-center mb-6 shrink-0 px-2">
                 <h3 class="text-2xl font-bold text-white tracking-tight">Kategorie</h3>
                 <button onclick="closeCategoryModal()" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/70 hover:bg-white/20 hover:text-white transition-colors active:scale-95">
@@ -263,12 +261,9 @@
                 </button>
             </div>
 
-            <!-- Scrollable List -->
             <div id="modal-categories-container" class="space-y-2 overflow-y-auto px-2 custom-scrollbar flex-grow">
-                <!-- Generowane przez JS -->
-            </div>
+                </div>
 
-            <!-- Footer / Done Button -->
             <div class="mt-6 pt-4 border-t border-white/10 shrink-0 px-2">
                 <button onclick="closeCategoryModal()" class="w-full py-4 bg-white text-slate-900 rounded-2xl font-extrabold text-lg shadow-lg hover:bg-white/90 active:scale-95 transition-all">
                     Gotowe
@@ -277,7 +272,6 @@
         </div>
     </div>
 
-    <!-- SKRYPTY (LOGIKA GRY) -->
     <script>
         // ==========================================
         // BAZA DANYCH SŁÓW
@@ -296,7 +290,7 @@
             { category: "Ubrania i Moda", words: ["Garnitur", "Krawat", "Mucha", "Koszula", "Marynarka", "Kamizelka", "Spodnie wizytowe", "Dżinsy", "Szorty", "Kąpielówki", "Skarpetki", "Podkoszulek", "Bluza", "Sweter", "Golf", "Kurtka", "Płaszcz", "Peleryna", "Trencz", "Wiatrówka", "Ramoneska", "Suknia wieczorowa", "Suknia ślubna", "Spódniczka", "Bluzka", "Tunika", "Legginsy", "Rajstopy", "Pończochy", "Podwiązka", "Stanik", "Majtki", "Gorset", "Piżama", "Szlafrok", "Koszula nocna", "Kapcie", "Buty sportowe", "Trampki", "Tenisówki", "Botki", "Kozaki", "Kalosze", "Szpilki", "Sandały", "Klapki", "Japonki", "Mokasyny", "Półbuty", "Glany", "Czapka", "Kapelusz", "Beret", "Kask", "Szalik", "Chusta", "Komin", "Rękawiczki", "Mufka", "Pasek", "Szelki", "Bransoletka", "Naszyjnik", "Wisiorek", "Łańcuszek", "Kolczyki", "Pierścionek", "Sygnet", "Obrączka", "Broszka", "Spinka", "Opaska", "Torebka", "Kopertówka", "Saszetka", "Nerka", "Okulary przeciwsłoneczne"] },
             { category: "Ciało i Zdrowie", words: ["Głowa", "Włosy", "Czoło", "Brwi", "Oczy", "Rzęsy", "Nos", "Usta", "Zęby", "Język", "Policzki", "Broda", "Szyja", "Kark", "Ramiona", "Barki", "Klatka piersiowa", "Brzuch", "Pępek", "Plecy", "Kręgosłup", "Ręce", "Dłonie", "Palce", "Paznokcie", "Nogi", "Uda", "Kolana", "Łydki", "Kostki", "Stopy", "Pięty", "Krew", "Serce", "Płuca", "Żołądek", "Wątroba", "Nerki", "Jelita", "Mózg", "Kości", "Czaszka", "Żebra", "Mięśnie", "Skóra", "Gardło", "Przeziębienie", "Grypa", "Gorączka", "Kaszel", "Katar", "Ból głowy", "Ból zęba", "Ból brzucha", "Złamanie", "Skręcenie", "Oparzenie", "Skaleczenie", "Blizna", "Siniak", "Zastrzyk", "Kroplówka", "Gips", "Plaster", "Syrop", "Tabletki", "Maść", "Szpital psychiatryczny", "Sala operacyjna", "Karetka pogotowia", "Defibrylator", "Stetoskop", "Skalpel", "Strzykawka", "Rentgen", "Rezonans", "USG", "Kule ortopedyczne", "Proteza"] },
             { category: "Święta, Okazje i Mity", words: ["Koncert", "Festiwal", "Ślub", "Pogrzeb", "Impreza urodzinowa", "Piknik", "Ognisko", "Boże Narodzenie", "Wielkanoc", "Święto Dziękczynienia", "Halloween", "Walentynki", "Sylwester", "Nowy Rok", "Dzień Matki", "Dzień Ojca", "Dzień Dziecka", "Mikołajki", "Andrzejki", "Urodziny", "Imieniny", "Rocznica ślubu", "Wieczór kawalerski", "Wieczór panieński", "Chrzest", "Komunia", "Bierzmowanie", "Matura", "Studniówka", "Rozwód", "Święty Mikołaj", "Renifer", "Elf", "Bałwan", "Zajączek", "Kurczaczek", "Wampir", "Wilkołak", "Zombi", "Duch", "Czarownica", "Mumia", "Frankenstein", "Smok", "Jednorożec", "Syrena", "Centaur", "Pegaz", "Cyklop", "Goblin", "Ork", "Troll", "Krasnolud", "Wróżka", "Księżniczka", "Królewicz", "Król", "Królowa", "Rycerz", "Pirat", "Ninja", "Samuraj", "Kowboj", "Indianin", "Kosmita", "Superbohater", "Złoczyńca"] },
-            { category: "Tylko dla dorosłych (18+)", words: ["Klub ze striptizem", "Sex shop", "Dom publiczny", "Więzienny prysznic", "Wyuzdana impreza", "Plaża nudystów", "Klub dla swingerów", "Pokój schadzek", "Plan filmu porno", "Kabina w sex-shopie", "Wibrator", "Kajdanki", "Bat", "Pejcz", "Wibrator króliczek", "Kulki gejszy", "Lateksowy kombinezon", "Sztuczna pochwa", "Dmuchana lala", "Taniec na rurze", "Lap dance", "Seks w trójkącie", "Orgietka", "Striptiz", "Noc z prostytutką", "Zdrada małżeńska", "Fetysz stóp", "Sadomasochizm", "Bdsm", "Cuckold", "Seks oralny", "Prezerwatywa", "Pigułka antykoncepcyjna", "Test ciążowy", "Viagra", "Film dla dorosłych", "Czat erotyczny", "Kamery na żywo", "Onlyfans", "Sex telefon", "Randka w ciemno", "Tinder", "Red light district", "Opaska na oczy", "Knebel", "Seks w aucie", "Seks w samolocie"] }
+            { category: "Tylko dla dorosłych (18+)", words: ["Dildo", "Klub ze striptizem", "Sex shop", "Dom publiczny", "Więzienny prysznic", "Wyuzdana impreza", "Plaża nudystów", "Klub dla swingerów", "Pokój schadzek", "Plan filmu porno", "Kabina w sex-shopie", "Wibrator", "Kajdanki", "Bat", "Pejcz", "Wibrator króliczek", "Kulki gejszy", "Lateksowy kombinezon", "Sztuczna pochwa", "Dmuchana lala", "Taniec na rurze", "Lap dance", "Seks w trójkącie", "Orgietka", "Striptiz", "Noc z prostytutką", "Zdrada małżeńska", "Fetysz stóp", "Sadomasochizm", "Bdsm", "Cuckold", "Seks oralny", "Prezerwatywa", "Pigułka antykoncepcyjna", "Test ciążowy", "Viagra", "Film dla dorosłych", "Czat erotyczny", "Kamery na żywo", "Onlyfans", "Sex telefon", "Randka w ciemno", "Tinder", "Red light district", "Opaska na oczy", "Knebel", "Seks w aucie", "Seks w samolocie"] }
         ];
 
         const WORDS_DATABASE = CATEGORIZED_WORDS.flatMap(cat => 
@@ -309,6 +303,8 @@
         let playersCount = 4;
         let impostorsCount = 1;
         let selectedCategories = CATEGORIZED_WORDS.filter(c => !c.category.includes('18+')).map(c => c.category);
+        let isJesterEnabled = false;
+        let isChaosEnabled = false;
 
         let roles = [];
         let currentWord = '';
@@ -337,6 +333,52 @@
             if (newVal >= 1 && newVal < playersCount) {
                 impostorsCount = newVal;
                 document.getElementById('impostors-count-display').innerText = impostorsCount;
+            }
+        }
+
+        function toggleJester() {
+            isJesterEnabled = !isJesterEnabled;
+            const icon = document.getElementById('jester-icon');
+            const bg = document.getElementById('jester-toggle-bg');
+            const dot = document.getElementById('jester-toggle-dot');
+
+            if (isJesterEnabled) {
+                icon.classList.remove('text-white/50');
+                icon.classList.add('text-pink-400');
+                bg.classList.remove('bg-white/20');
+                bg.classList.add('bg-pink-500');
+                dot.classList.remove('translate-x-[2px]');
+                dot.classList.add('translate-x-[24px]');
+            } else {
+                icon.classList.remove('text-pink-400');
+                icon.classList.add('text-white/50');
+                bg.classList.remove('bg-pink-500');
+                bg.classList.add('bg-white/20');
+                dot.classList.remove('translate-x-[24px]');
+                dot.classList.add('translate-x-[2px]');
+            }
+        }
+
+        function toggleChaos() {
+            isChaosEnabled = !isChaosEnabled;
+            const icon = document.getElementById('chaos-icon');
+            const bg = document.getElementById('chaos-toggle-bg');
+            const dot = document.getElementById('chaos-toggle-dot');
+
+            if (isChaosEnabled) {
+                icon.classList.remove('text-white/50');
+                icon.classList.add('text-green-400');
+                bg.classList.remove('bg-white/20');
+                bg.classList.add('bg-green-500');
+                dot.classList.remove('translate-x-[2px]');
+                dot.classList.add('translate-x-[24px]');
+            } else {
+                icon.classList.remove('text-green-400');
+                icon.classList.add('text-white/50');
+                bg.classList.remove('bg-green-500');
+                bg.classList.add('bg-white/20');
+                dot.classList.remove('translate-x-[24px]');
+                dot.classList.add('translate-x-[2px]');
             }
         }
 
@@ -505,24 +547,53 @@
             
             errorElement.classList.add('hidden-screen');
 
-            // Losowanie słowa
+            // Losowanie słowa (potrzebne nawet dla Jestera, by na końcu wyświetlić w wynikach)
             const randomObj = availableWords[Math.floor(Math.random() * availableWords.length)];
             currentWord = randomObj.word;
             currentCategory = randomObj.category;
 
-            // Generowanie ról
+            // Tworzymy bazowe role
             roles = Array(playersCount).fill(null).map(() => ({ isImpostor: false, word: currentWord }));
-            
-            let impostorIndices = new Set();
-            while(impostorIndices.size < impostorsCount) {
-                impostorIndices.add(Math.floor(Math.random() * playersCount));
+
+            // Sprawdzamy, czy specjalny tryb ma się uaktywnić (każdy ma 5% szans jeśli jest włączony)
+            let isJesterWin = false;
+            let isChaosWin = false;
+
+            if (isJesterEnabled && Math.random() < 0.05) {
+                isJesterWin = true;
+            } else if (isChaosEnabled && Math.random() < 0.05) {
+                isChaosWin = true;
             }
 
-            impostorIndices.forEach(index => {
-                roles[index] = { isImpostor: true, word: null };
-            });
+            if (isJesterWin) {
+                // Wszyscy stają się impostorami
+                roles.forEach(role => {
+                    role.isImpostor = true;
+                    role.word = null;
+                });
+            } else if (isChaosWin) {
+                // Tryb Chaos - każdy dostaje inne słowo
+                let shuffledWords = [...availableWords].sort(() => 0.5 - Math.random());
+                roles.forEach((role, idx) => {
+                    role.isImpostor = false;
+                    // Każdy gracz dostaje unikalne słowo (zapętlamy jeśli słów byłoby za mało)
+                    role.word = shuffledWords[idx % shuffledWords.length].word;
+                    role.isChaos = true;
+                });
+                currentWord = "TRYB CHAOS";
+            } else {
+                // Zwykła, normalna gra
+                let impostorIndices = new Set();
+                while(impostorIndices.size < impostorsCount) {
+                    impostorIndices.add(Math.floor(Math.random() * playersCount));
+                }
 
-            // Losowanie gracza rozpoczynającego (każdy może zacząć, również impostor)
+                impostorIndices.forEach(index => {
+                    roles[index] = { isImpostor: true, word: null };
+                });
+            }
+
+            // Losowanie gracza rozpoczynającego (każdy może zacząć)
             startingPlayerIndex = Math.floor(Math.random() * playersCount);
 
             currentPlayerIndex = 0;
@@ -562,16 +633,65 @@
         function goToResult() {
             document.getElementById('result-word').innerText = currentWord;
             
+            // Sprawdźmy, w jakim trybie graliśmy
+            const isJester = roles.every(r => r.isImpostor);
+            const isChaos = roles.every(r => r.isChaos);
+            
+            const subtitleElement = document.getElementById('result-subtitle');
+            const wordElement = document.getElementById('result-word');
+            const impostorsHeader = document.getElementById('result-impostors-header');
             const listContainer = document.getElementById('result-impostors-list');
+            
             listContainer.innerHTML = '';
-            roles.forEach((role, idx) => {
-                if (role.isImpostor) {
+            
+            if (isJester) {
+                subtitleElement.innerText = "TRYB JESTER! Wszyscy byli oszustami!";
+                subtitleElement.classList.add('text-pink-400', 'font-bold');
+                subtitleElement.classList.remove('text-green-400');
+                wordElement.innerText = "BRAK HASŁA";
+                impostorsHeader.innerText = "Wszyscy Gracze:";
+                
+                listContainer.className = "flex flex-wrap justify-center gap-2";
+                
+                roles.forEach((role, idx) => {
                     const span = document.createElement('span');
-                    span.className = "bg-red-500/30 border border-red-500/50 text-white px-4 py-1.5 rounded-full font-medium";
+                    span.className = "bg-pink-500/30 border border-pink-500/50 text-white px-4 py-1.5 rounded-full font-medium";
                     span.innerText = `Gracz ${idx + 1}`;
                     listContainer.appendChild(span);
-                }
-            });
+                });
+            } else if (isChaos) {
+                subtitleElement.innerText = "TRYB CHAOS! Każdy miał inne hasło!";
+                subtitleElement.classList.add('text-green-400', 'font-bold');
+                subtitleElement.classList.remove('text-pink-400');
+                wordElement.innerText = "SZALEŃSTWO";
+                impostorsHeader.innerText = "Hasła Graczy:";
+                
+                // Zmieniamy kontener na układ pionowy, aby pomieścił słowa
+                listContainer.className = "flex flex-col space-y-2";
+                
+                roles.forEach((role, idx) => {
+                    const div = document.createElement('div');
+                    div.className = "flex justify-between items-center bg-white/10 px-4 py-2 rounded-lg";
+                    div.innerHTML = `<span class="font-bold text-white/70">Gracz ${idx + 1}</span><span class="text-green-300 font-bold ml-4 text-right">${role.word}</span>`;
+                    listContainer.appendChild(div);
+                });
+            } else {
+                subtitleElement.innerText = "Poprawne hasło to:";
+                subtitleElement.classList.remove('text-pink-400', 'text-green-400', 'font-bold');
+                wordElement.innerText = currentWord;
+                impostorsHeader.innerText = "Impostorzy:";
+                
+                listContainer.className = "flex flex-wrap justify-center gap-2";
+
+                roles.forEach((role, idx) => {
+                    if (role.isImpostor) {
+                        const span = document.createElement('span');
+                        span.className = "bg-red-500/30 border border-red-500/50 text-white px-4 py-1.5 rounded-full font-medium";
+                        span.innerText = `Gracz ${idx + 1}`;
+                        listContainer.appendChild(span);
+                    }
+                });
+            }
 
             switchScreen('screen-result');
         }
