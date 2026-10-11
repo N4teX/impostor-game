@@ -32,6 +32,17 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.3);
         }
         
+        .game-mode-tab { color: rgba(255,255,255,.68); background: transparent; border: 1px solid transparent; }
+        .game-mode-tab.active { color: #fff; background: linear-gradient(135deg, rgba(255,255,255,.24), rgba(255,255,255,.08)); border-color: rgba(255,255,255,.28); box-shadow: 0 4px 18px rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.22); }
+        /* Ulepszenia Liquid Glass dla Safari/iOS/macOS; z bezpiecznym fallbackiem */
+        @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+            .glass-panel { -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%); background: rgba(255,255,255,.075); border-color: rgba(255,255,255,.24); }
+            .game-mode-tab.active { -webkit-backdrop-filter: blur(20px) saturate(190%); backdrop-filter: blur(20px) saturate(190%); }
+        }
+        @media (prefers-reduced-transparency: reduce) {
+            .glass-panel { background: rgba(30, 27, 75, .92); -webkit-backdrop-filter: none; backdrop-filter: none; }
+        }
+
         /* Styl dla Modalu i Scrollbara (iOS feel) */
         .modal-overlay { opacity: 0; transition: opacity 0.3s ease-out; }
         .modal-overlay.open { opacity: 1; }
@@ -107,6 +118,12 @@
                     IMPOSTOR
                 </h1>
                 <p class="text-white/70 font-medium">Znajdź intruza wśród nas</p>
+            </div>
+
+            <!-- Zakładki trybu gry -->
+            <div class="glass-panel w-full rounded-full p-1.5 flex gap-1" role="tablist" aria-label="Wybór trybu gry">
+                <button id="tab-main-mode" role="tab" aria-selected="true" onclick="setGameMode('main')" class="game-mode-tab active flex-1 rounded-full px-3 py-3 text-sm font-bold transition-all duration-300">Tryb główny</button>
+                <button id="tab-other-mode" role="tab" aria-selected="false" onclick="setGameMode('other')" class="game-mode-tab flex-1 rounded-full px-3 py-3 text-sm font-bold transition-all duration-300">Inny Impostor</button>
             </div>
 
             <div class="glass-panel w-full rounded-[2.5rem] p-6 space-y-4 relative overflow-hidden">
@@ -185,6 +202,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 <div class="relative z-10 w-full pt-1">
                     <button onclick="openCategoryModal()" class="w-full flex items-center justify-between px-4 py-3 glass-panel rounded-2xl hover:bg-white/10 transition-colors active:scale-95 duration-200">
@@ -401,6 +419,7 @@
         
         let isChaosEnabled = false;
         let chaosProbability = 5;
+        let isOtherImpostorEnabled = false;
 
         let roles = [];
         let currentWord = '';
@@ -496,6 +515,17 @@
             chaosProbability = parseInt(val);
             document.getElementById('chaos-prob-display').innerText = `${chaosProbability}%`;
             document.getElementById('chaos-desc').innerText = `${chaosProbability}% szans: każdy ma inne hasło!`;
+        }
+
+        // --- Zakładki trybu gry ---
+        function setGameMode(mode) {
+            isOtherImpostorEnabled = mode === 'other';
+            const mainTab = document.getElementById('tab-main-mode');
+            const otherTab = document.getElementById('tab-other-mode');
+            mainTab.classList.toggle('active', !isOtherImpostorEnabled);
+            otherTab.classList.toggle('active', isOtherImpostorEnabled);
+            mainTab.setAttribute('aria-selected', String(!isOtherImpostorEnabled));
+            otherTab.setAttribute('aria-selected', String(isOtherImpostorEnabled));
         }
 
         // --- Logika Modalu Kategorii ---
@@ -607,7 +637,7 @@
                 document.getElementById('passing-visible-view').classList.remove('hidden-screen');
 
                 const role = roles[currentPlayerIndex];
-                if (role.isImpostor) {
+                if (role.isImpostor && !role.isOtherImpostor) {
                     document.getElementById('role-impostor').classList.remove('hidden-screen');
                 } else {
                     document.getElementById('role-civilian').classList.remove('hidden-screen');
@@ -682,13 +712,11 @@
             }
 
             if (isJesterWin) {
-                // Wszyscy stają się impostorami
                 roles.forEach(role => {
                     role.isImpostor = true;
                     role.word = null;
                 });
             } else if (isChaosWin) {
-                // Tryb Chaos - każdy dostaje inne słowo z wylosowanych kategorii
                 let shuffledWords = [...availableWords].sort(() => 0.5 - Math.random());
                 roles.forEach((role, idx) => {
                     role.isImpostor = false;
@@ -697,15 +725,30 @@
                 });
                 currentWord = "TRYB CHAOS";
             } else {
-                // Zwykła, normalna gra
-                let impostorIndices = new Set();
-                while(impostorIndices.size < impostorsCount) {
-                    impostorIndices.add(Math.floor(Math.random() * playersCount));
+                const candidates = isOtherImpostorEnabled
+                    ? Array.from({length: playersCount}, (_, i) => i)
+                    : Array.from({length: playersCount - 1}, (_, i) => i + 1);
+                for (let i = candidates.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [candidates[i], candidates[j]] = [candidates[j], candidates[i]];
                 }
+                const impostorIndices = candidates.slice(0, impostorsCount);
 
-                impostorIndices.forEach(index => {
-                    roles[index] = { isImpostor: true, word: null };
-                });
+                if (isOtherImpostorEnabled) {
+                    const sameCategoryWords = availableWords.filter(w => w.category === currentCategory && w.word !== currentWord);
+                    const alternatives = sameCategoryWords.length ? sameCategoryWords : availableWords.filter(w => w.word !== currentWord);
+                    impostorIndices.forEach(index => {
+                        const alternate = alternatives.length
+                            ? alternatives[Math.floor(Math.random() * alternatives.length)]
+                            : { word: currentWord };
+                        // Specjalny impostor widzi zwykły ekran ze swoim innym hasłem.
+                        roles[index] = { isImpostor: true, isOtherImpostor: true, word: alternate.word };
+                    });
+                } else {
+                    impostorIndices.forEach(index => {
+                        roles[index] = { isImpostor: true, word: null };
+                    });
+                }
             }
 
             // Losowanie gracza rozpoczynającego (każdy może zacząć)
@@ -802,7 +845,7 @@
                     if (role.isImpostor) {
                         const span = document.createElement('span');
                         span.className = "bg-red-500/30 border border-red-500/50 text-white px-4 py-1.5 rounded-full font-medium";
-                        span.innerText = `Gracz ${idx + 1}`;
+                        span.innerText = role.isOtherImpostor ? `Gracz ${idx + 1} (inne hasło: ${role.word})` : `Gracz ${idx + 1}`;
                         listContainer.appendChild(span);
                     }
                 });
@@ -842,5 +885,3 @@
     </script>
 </body>
 </html>
-
-
